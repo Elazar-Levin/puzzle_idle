@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "build": "node scripts/obfuscate.js"
+    "build": "node scripts/obfuscate.js",
+    "deploy": "npm run build && git add dist && git commit -m \"Build dist\" && git subtree push --prefix dist origin gh-pages"
   },
   "keywords": [],
   "author": "",
