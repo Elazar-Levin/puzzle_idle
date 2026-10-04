@@ -1,0 +1,20 @@
+{
+  "name": "puzzle_idle",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "build": "node scripts/obfuscate.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "eslint": "^10.11.0",
+    "globals": "^17.13.0",
+    "javascript-obfuscator": "^5.8.1",
+    "playwright": "^1.63.0"
+  }
+}

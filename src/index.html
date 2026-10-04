@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Puzzle Idle</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/state.js" defer></script>
+    <script src="js/economy.js" defer></script>
+    <script src="js/image.js" defer></script>
+    <script src="js/particles.js" defer></script>
+    <script src="js/piece.js" defer></script>
+    <script src="js/puzzle.js" defer></script>
+    <script src="js/render.js" defer></script>
+    <script src="js/board.js" defer></script>
+    <script src="js/modal.js" defer></script>
+    <script src="js/tutorial.js" defer></script>
+    <script src="js/ui.js" defer></script>
+    <script src="js/audio.js" defer></script>
+    <script src="js/stats.js" defer></script>
+    <script src="js/save.js" defer></script>
+    <script src="js/input.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+<body>
+    <div id="ui-overlay">
+        <div class="stat-row">
+            <span>Puzzle Matrix:</span>
+            <strong id="matrix-display">2 x 2</strong>
+        </div>
+        <div class="stat-row">
+            <span>Current size:</span>
+            <select id="rows-select" onchange="setCurrentSize('rows', this.value)"></select>
+            x
+            <select id="cols-select" onchange="setCurrentSize('cols', this.value)"></select>
+        </div>
+        <div class="stat-row stat-row--prestige-boost">
+            <span>Prestige Boost:</span>
+            <strong id="multiplier-display">x1.0</strong>
+        </div>
+        <div class="stat-row stat-row--prestige-tokens">
+            <span>Prestige Shards:</span>
+            <strong id="prestige-display">0</strong>
+        </div>
+        <div class="stat-row">
+            <span>Wallet:</span>
+            <strong id="wallet-display">0</strong>
+        </div>
+        <div class="stat-row">
+            <span>Daily Bonus:</span>
+            <strong id="daily-display">Available</strong>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu('upgrades-menu')">▶ Upgrades</button>
+        <div id="upgrades-menu" class="menu-section" hidden>
+            <button onclick="upgradeDimension('rows')" data-tip="Add one row to the puzzle grid. Cost grows each level.">
+                Expand Rows (<span id="row-cost">0</span> Pieces)
+            </button>
+            <small id="row-info" class="upgrade-info"></small>
+            <button onclick="upgradeDimension('cols')" data-tip="Add one column to the puzzle grid. Cost grows each level.">
+                Expand Columns (<span id="col-cost">0</span> Pieces)
+            </button>
+            <small id="col-info" class="upgrade-info"></small>
+            <button onclick="buyAutoPlacer()" data-tip="Permanently auto-place one more piece at a time.">
+                Buy Auto-Placer (<span id="auto-cost">15</span> Pieces)
+            </button>
+            <small id="auto-info" class="upgrade-info"></small>
+            <button onclick="buyAutoSpeed()" data-tip="Reduce the cooldown between auto-placer launches.">
+                Upgrade Placer Speed (<span id="speed-cost">20</span> Pieces)
+            </button>
+            <small id="speed-info" class="upgrade-info"></small>
+            <div class="stat-row"><span>Auto-Placer Strategy:</span></div>
+            <div id="strategy-row">
+                <button data-strategy="random" onclick="setAutoStrategy('random')">Random</button>
+                <button data-strategy="edges" onclick="setAutoStrategy('edges')">Edges</button>
+                <button data-strategy="corners" onclick="setAutoStrategy('corners')">Corners</button>
+                <button data-strategy="sections" onclick="setAutoStrategy('sections')">Sections</button>
+            </div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu('prestige-upgrades-menu')">▶ Prestige Upgrades</button>
+        <div id="prestige-upgrades-menu" class="menu-section" hidden>
+            <button onclick="buyPrestigeUpgrade('snap')" data-tip="+4px snap-to-target radius per level. Spending Shards lowers your payout multiplier.">
+                Snap Assist Lv<span id="snap-level">0</span> (<span id="snap-cost">15</span> Shards)
+            </button>
+            <small id="snap-info" class="upgrade-info"></small>
+            <button onclick="buyPrestigeUpgrade('headStart')" data-tip="+25 starting currency per level at every new puzzle. Spending Shards lowers your payout multiplier.">
+                Head Start Lv<span id="headstart-level">0</span> (<span id="headstart-cost">15</span> Shards)
+            </button>
+            <small id="headstart-info" class="upgrade-info"></small>
+            <button onclick="buyPrestigeUpgrade('swift')" data-tip="Auto-placer launches 10% faster per level. Spending Shards lowers your payout multiplier.">
+                Swift Placers Lv<span id="swift-level">0</span> (<span id="swift-cost">20</span> Shards)
+            </button>
+            <small id="swift-info" class="upgrade-info"></small>
+            <button onclick="buyPrestigeUpgrade('tokens')" data-tip="+10% prestige Shards earned per level. Spending Shards lowers your payout multiplier.">
+                Shard Bonus Lv<span id="tokens-level">0</span> (<span id="tokens-cost">25</span> Shards)
+            </button>
+            <small id="tokens-info" class="upgrade-info"></small>
+            <button onclick="buyPrestigeUpgrade('discount')" data-tip="-10% row/column upgrade prices per level (min cost 1). Spending Shards lowers your payout multiplier.">
+                Discount Lv<span id="discount-level">0</span> (<span id="discount-cost">25</span> Shards)
+            </button>
+            <small id="discount-info" class="upgrade-info"></small>
+            <button id="guide-btn" onclick="buyPrestigeUpgrade('guide')" data-tip="One-time purchase: shows a faint preview of the completed puzzle on the board. Spending Shards lowers your payout multiplier.">
+                Guide Overlay <span id="guide-level">—</span> (<span id="guide-cost">10</span> Shards)
+            </button>
+            <small class="upgrade-info">Shows a faint preview of the completed picture</small>
+            <button onclick="buyPrestigeUpgrade('mastery')" data-tip="+1% payout boost per banked Shard per level. Spending Shards still removes their boost.">
+                Shard Mastery Lv<span id="mastery-level">0</span> (<span id="mastery-cost">25</span> Shards)
+            </button>
+            <small id="mastery-info" class="upgrade-info"></small>
+
+            <div class="stat-row"><span>Board Skins:</span></div>
+            <div id="skins-list"></div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu('stats-menu')">▶ Stats</button>
+        <div id="stats-menu" class="menu-section" hidden>
+            <div class="stat-row"><span>Pieces placed:</span> <strong id="stat-pieces">0</strong></div>
+            <div class="stat-row"><span>Puzzles completed:</span> <strong id="stat-completed">0</strong></div>
+            <div class="stat-row"><span>Prestiges:</span> <strong id="stat-prestiges">0</strong></div>
+            <div class="stat-row"><span>Lifetime pieces earned:</span> <strong id="stat-lifetime">0</strong></div>
+            <div class="stat-row"><span>Fastest completion:</span> <strong id="stat-fastest">—</strong></div>
+            <div class="stat-row"><span>Run log:</span></div>
+            <div id="run-log-list"></div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu('achievements-menu')">▶ Achievements</button>
+        <div id="achievements-menu" class="menu-section" hidden>
+            <div id="achievements-list"></div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu('challenges-menu')">▶ Challenges</button>
+        <div id="challenges-menu" class="menu-section" hidden>
+            <div id="challenges-hint" class="achievement">Reach a 500-cell board to unlock challenges.</div>
+            <div id="challenge-active" class="stat-row" style="display:none; color:#ffd700;"></div>
+            <div id="challenges-list"></div>
+        </div>
+
+        <button class="menu-toggle" onclick="toggleMenu('settings-menu')">▶ Settings</button>
+        <div id="settings-menu" class="menu-section" hidden>
+            <div class="stat-row"><span>Music Volume:</span></div>
+            <input id="volume-slider" type="range" min="0" max="100" value="35" oninput="setMusicVolume(this.value / 100)">
+            <button id="mute-btn" onclick="toggleMute()" data-tip="Mute/unmute the background music.">Mute Music</button>
+            <button id="sfx-mute-btn" onclick="toggleSfxMute()" data-tip="Mute/unmute sound effects (completion chime).">Mute SFX</button>
+            <button id="reset-save-btn" onclick="resetSave()" data-tip="Delete all saved progress and reload the game.">Reset Save</button>
+        </div>
+
+        <button id="prestige-btn" onclick="executePrestigeReset()" data-tip="Reset currency and board for Shards that permanently boost payouts.">
+            Prestige Reset (+<span id="prestige-gain">0</span> Shards)
+        </button>
+    </div>
+    <button id="buy-amount-btn" onclick="cycleBuyAmount()" data-tip="Switch between buying 1, 10, or as many as affordable.">Buy: x1</button>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <div id="tooltip"></div>
+    <audio id="bg-music" src="assets/yellow-flower.mp3" loop preload="auto"></audio>
+    <div id="music-credit">Music: Aeris - Yellow Flower (freetouse.com)</div>
+</body>
+</html>
