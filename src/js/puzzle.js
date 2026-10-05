@@ -105,7 +105,7 @@ class JigsawPuzzle {
         const openFlightSlots = gameState.autoPlacers - currentFlyingCount;
         if (openFlightSlots <= 0) {return;}
 
-        const availablePieces = this.pieces.filter(p => !p.placed && !p.isAnimating);
+        const availablePieces = this.pieces.filter(p => !p.placed && !p.isAnimating && p !== draggedPiece);
 
         // Honor the chosen auto-placer strategy: prefer border/corner pieces first.
         let pool = availablePieces;
