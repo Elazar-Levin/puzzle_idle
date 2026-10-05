@@ -71,5 +71,5 @@ function getHeadStartBonus() {
 function recomputePayoutMultiplier() {
     // Spending Shards on upgrades is a trade: fewer banked Shards,
     // so the payout multiplier drops, but the upgrade perks remain.
-    gameState.payoutMultiplier = 1.0 + gameState.prestigeCurrency * (0.05 + 0.01 * prestigeLevel("mastery"));
+    gameState.payoutMultiplier = 1.0 + gameState.prestigeCurrency * (0.01 + 0.01 * prestigeLevel("mastery"));
 }
