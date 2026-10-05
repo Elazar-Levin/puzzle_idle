@@ -21,13 +21,18 @@ function calculatePrestigeGain() {
     const totalCurrentCells = gameState.maxRows * gameState.maxCols;
     if (totalCurrentCells <= 100) {return 0;}
 
-    // Longer/bigger runs pay more, and the wallet (pieces you held onto
-    // instead of spending) rewards saving up before resetting.
-    // Wallet bonus is intentionally small: you should still get more
-    // Shards by saving up, but it won't dominate the base amount.
-    const sizeBonus = (totalCurrentCells - 100) / 5;
-    const walletBonus = 1 + gameState.currency / 1000;
-    return Math.floor(sizeBonus * walletBonus * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
+    // Flat rate up to a 15x15 board, then +5% per extra cell.
+    const FLAT_CAP = 225; // 15x15
+    const flatGain = Math.max(0, (totalCurrentCells - 100) / 5);
+
+    let gain;
+    if (totalCurrentCells <= FLAT_CAP) {
+        gain = flatGain;
+    } else {
+        gain = ((FLAT_CAP - 100) / 5) * Math.pow(1.05, totalCurrentCells - FLAT_CAP);
+    }
+
+    return Math.floor(gain * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
 }
 
 function getAutoPlacerCost(count = gameState.autoPlacers) {
