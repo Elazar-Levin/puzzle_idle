@@ -23,9 +23,11 @@ function calculatePrestigeGain() {
 
     // Longer/bigger runs pay more, and the wallet (pieces you held onto
     // instead of spending) rewards saving up before resetting.
+    // Pure max-cell count. (A Pieces-held bonus created a weird bias:
+    // upgrades bought on both axes drain the wallet, so square boards
+    // ended up prestige-valuing less than uneven ones.)
     const sizeBonus = (totalCurrentCells - 100) / 5;
-    const walletBonus = 1 + gameState.currency / 100;
-    return Math.floor(sizeBonus * walletBonus * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
+    return Math.floor(sizeBonus * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
 }
 
 function getAutoPlacerCost(count = gameState.autoPlacers) {
