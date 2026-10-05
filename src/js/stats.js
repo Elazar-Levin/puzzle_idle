@@ -63,10 +63,8 @@ function challengeProgress(c) {
 function challengeTarget(c) {
     // Scale targets to the max board size so they stay challenging
     // instead of becoming trivial at 500+ cells.
-    const ratio = 1/((gameState.rows * gameState.cols) / (gameState.maxRows * gameState.maxCols));
-    const scale = Math.max(1, Math.floor((stats.maxCells) / 500));
-    c.desc = c.desc.replace(/\d+/, c.target * scale * ratio);
-    return c.target * scale*ratio;
+    const scale = Math.max(1, Math.floor(stats.maxCells / 500));
+    return Math.floor(c.target * scale);
 }
 
 function startChallenge(id) {

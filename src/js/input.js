@@ -86,7 +86,7 @@ function onPointerUp() {
 
                 updateUI();
 
-                setTimeout(initNewPuzzle, 50);
+                setTimeout(initNewPuzzle, 200);
             }
         }
     }
