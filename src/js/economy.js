@@ -21,10 +21,11 @@ function calculatePrestigeGain() {
     const totalCurrentCells = gameState.maxRows * gameState.maxCols;
     if (totalCurrentCells <= 100) {return 0;}
 
-    // Linear payout: about 20 Shards at ~100 cells, i.e. +100% (2x earnings)
-    // at the first prestige. Grows gently from there: ~40 at 200, ~80 at 400.
-    const base = Math.floor(totalCurrentCells / 5);
-    return Math.floor(base * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
+    // Longer/bigger runs pay more, and the wallet (pieces you held onto
+    // instead of spending) rewards saving up before resetting.
+    const sizeBonus = (totalCurrentCells - 100) / 5;
+    const walletBonus = 1 + gameState.currency / 100;
+    return Math.floor(sizeBonus * walletBonus * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
 }
 
 function getAutoPlacerCost(count = gameState.autoPlacers) {
@@ -52,7 +53,9 @@ function getPrestigeUpgradeCost(key, level = prestigeLevel(key)) {
     if (key === "guide") {
         return level >= 1 ? Infinity : base;
     }
-    return Math.floor(base * Math.pow(2, level));
+    // Flat per-level cost: upgrades stay meaningful across many prestiges
+    // instead of doubling away from the prestige rewards.
+    return base * (level + 1);
 }
 
 function getSnapRadius() {

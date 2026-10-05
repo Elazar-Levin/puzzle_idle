@@ -175,7 +175,9 @@ class JigsawPuzzle {
         this.pieces.forEach(piece => {
             if (!piece.isAnimating) {return;}
 
-            const easeSpeed = 0.12;
+            const speedLevel = gameState.autoSpeedLevel - 1;
+            const swiftFactor = 1 + 0.15 * (prestigeLevel("swift") + (buffs.speed || 0));
+            const easeSpeed = 0.12 * (1 + 0.3 * speedLevel) * swiftFactor;
             piece.x += (piece.animTargetX - piece.x) * easeSpeed;
             piece.y += (piece.animTargetY - piece.y) * easeSpeed;
 

@@ -63,6 +63,13 @@ function challengeProgress(c) {
     return (stats[c.counter] || 0) - activeChallenge.baseline;
 }
 
+function challengeTarget(c) {
+    // Scale targets to the max board size so they stay challenging
+    // instead of becoming trivial at 500+ cells.
+    const scale = Math.max(1, Math.floor((gameState.maxRows * gameState.maxCols) / 500));
+    return c.target * scale;
+}
+
 function startChallenge(id) {
     if (activeChallenge || stats.maxCells < CHALLENGE_UNLOCK_CELLS) {return;}
 
@@ -83,7 +90,7 @@ function tickChallenges() {
     const c = CHALLENGES.find(x => x.id === activeChallenge.id);
     if (!c) {activeChallenge = null; return;}
 
-    if (challengeProgress(c) >= c.target) {
+    if (challengeProgress(c) >= challengeTarget(c)) {
         // WIN — apply the permanent buff.
         challenges[c.id] = true;
         buffs[c.buff.key] = (buffs[c.buff.key] || 0) + 1;
@@ -123,7 +130,7 @@ function renderChallenges() {
             const c = CHALLENGES.find(x => x.id === activeChallenge.id);
             const left = Math.max(0, Math.ceil((activeChallenge.endsAt - Date.now()) / 1000));
             active.style.display = "block";
-            active.textContent = `Active: ${c.name} — ${challengeProgress(c)}/${c.target} — ${left}s left`;
+            active.textContent = `Active: ${c.name} — ${challengeProgress(c)}/${challengeTarget(c)} — ${left}s left`;
         } else {
             active.style.display = "none";
         }
@@ -140,7 +147,7 @@ function renderChallenges() {
             return `<div class="achievement done">✓ ${c.name} — done (${c.buff.label})</div>`;
         }
         const btn = activeChallenge ? "" : `<button onclick="startChallenge('${c.id}')">Start</button>`;
-        return `<div class="achievement">○ ${c.name} — ${c.desc} (${c.buff.label}) ${btn}</div>`;
+        return `<div class="achievement">○ ${c.name} — ${c.desc} (need ${challengeTarget(c)}) (${c.buff.label}) ${btn}</div>`;
     }).join("");
 }
 
