@@ -74,7 +74,7 @@ function onPointerUp() {
                 gameState.currency += reward;
                 recordPuzzleComplete(reward);
                 playComplete();
-                var headStartBonus = getHeadStartBonus();
+                const headStartBonus = getHeadStartBonus();
                 if (headStartBonus > 0) {
                     spawnTextParticle(BOARD_X + BOARD_WIDTH / 2 - 40, BOARD_Y + BOARD_HEIGHT / 2 + 30, `+${headStartBonus} Pieces`);
                 }
