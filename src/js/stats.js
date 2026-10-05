@@ -27,18 +27,18 @@ function recordPuzzleComplete(reward) {
 }
 
 const ACHIEVEMENTS = [
-    { id: "place50", name: "Getting Started", desc: "Place 50 pieces", test: () => stats.piecesPlaced >= 50 },
-    { id: "place500", name: "Piece Collector", desc: "Place 200 pieces", test: () => stats.piecesPlaced >= 200 },
-    { id: "complete10", name: "Puzzle Solver", desc: "Complete 10 puzzles", test: () => stats.puzzlesCompleted >= 10 },
-    { id: "complete50", name: "Puzzle Master", desc: "Complete 25 puzzles", test: () => stats.puzzlesCompleted >= 25 },
+    { id: "place100", name: "Getting Started", desc: "Place 100 pieces", test: () => stats.piecesPlaced >= 100 },
+    { id: "place500", name: "Piece Collector", desc: "Place 500 pieces", test: () => stats.piecesPlaced >= 500 },
+    { id: "complete50", name: "Puzzle Solver", desc: "Complete 50 puzzles", test: () => stats.puzzlesCompleted >= 50 },
+    { id: "complete100", name: "Puzzle Master", desc: "Complete 100 puzzles", test: () => stats.puzzlesCompleted >= 100 },
     { id: "prestige1", name: "Rebirth", desc: "Prestige once", test: () => stats.prestiges >= 1 },
     { id: "auto3", name: "Automation Age", desc: "Own 3 auto-placers", test: () => gameState.autoPlacers >= 3 },
-    { id: "big6", name: "Cramped Quarters", desc: "Reach a 4x4 grid", test: () => gameState.rows * gameState.cols >= 16 },
+    { id: "big6", name: "Cramped Quarters", desc: "Reach a 10x10 grid", test: () => gameState.rows * gameState.cols >= 100 },
     { id: "fast30", name: "Speed Demon", desc: "Finish a puzzle in under 30s", test: () => stats.fastestMs > 0 && stats.fastestMs < 30000 },
     { id: "place2000", name: "Sandwich Artist", desc: "Place 1,000 pieces", test: () => stats.piecesPlaced >= 1000 },
-    { id: "complete100", name: "Completionist", desc: "Complete 50 puzzles", test: () => stats.puzzlesCompleted >= 50 },
-    { id: "lifetime1k", name: "High Roller", desc: "Earn 500 pieces in total", test: () => stats.lifetimePieces >= 500 },
-    { id: "auto5", name: "Factory Floor", desc: "Own 4 auto-placers", test: () => gameState.autoPlacers >= 4 },
+    { id: "complete100", name: "Completionist", desc: "Complete 100 puzzles", test: () => stats.puzzlesCompleted >= 100 },
+    { id: "lifetime10k", name: "High Roller", desc: "Earn 10,000 pieces in total", test: () => stats.lifetimePieces >= 10000 },
+    { id: "auto5", name: "Factory Floor", desc: "Own 5 auto-placers", test: () => gameState.autoPlacers >= 5 },
 ];
 
 const CHALLENGE_UNLOCK_CELLS = 500;
