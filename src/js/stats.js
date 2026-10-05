@@ -63,7 +63,7 @@ function challengeProgress(c) {
 function challengeTarget(c) {
     // Scale targets to the max board size so they stay challenging
     // instead of becoming trivial at 500+ cells.
-    const scale = Math.max(1, Math.floor((gameState.maxRows * gameState.maxCols) / 500));
+    const scale = Math.max(1, Math.floor((stats.maxCells) / 500));
     return c.target * scale;
 }
 
