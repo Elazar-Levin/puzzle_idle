@@ -1,5 +1,3 @@
-// Canvas rendering: piece paths, Pieces, and the full frame.
-
 function drawEdge(ctx, x1, y1, x2, y2, edgeType, tabSize, outwardX, outwardY, params) {
     if (edgeType === FLAT) {
         ctx.lineTo(x2, y2);
@@ -118,11 +116,11 @@ function draw() {
     ctx.fillStyle = THEMES[activeSkin].bg;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Board mat where Pieces lock into place.
+    // Board mat
     ctx.fillStyle = THEMES[activeSkin].mat;
     ctx.fillRect(BOARD_X, BOARD_Y, BOARD_WIDTH, BOARD_HEIGHT);
 
-    // Guide overlay: faint preview of the completed picture over the mat.
+    // Guide overlay
     if (prestigeLevel("guide") >= 1 && gameState.imageLoaded && gameState.puzzleImage) {
         ctx.save();
         ctx.globalAlpha = 0.25;

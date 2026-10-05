@@ -2,7 +2,7 @@
 
 let audioCtx = null;
 
-// Any user interaction (canvas or UI buttons) unlocks the audio pipeline.
+// Trigger audio on any user interaction as per browser rules
 document.addEventListener("pointerdown", () => ensureAudio(), { capture: true });
 
 function ensureAudio() {

@@ -1,5 +1,4 @@
 /* eslint-disable prefer-const -- reassigned across modules; prefer-const can't see that */
-// Shared canvas, game state, and cross-module flags.
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 

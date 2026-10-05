@@ -212,8 +212,12 @@ class JigsawPuzzle {
                     gameState.currency += reward;
                     recordPuzzleComplete(reward);
                     playComplete();
-                    gameState.currency += getHeadStartBonus();
-
+                    var headStartBonus = getHeadStartBonus();
+                    if (headStartBonus > 0) {
+                        spawnTextParticle(BOARD_X + BOARD_WIDTH / 2 - 40, BOARD_Y + BOARD_HEIGHT / 2 + 30, `+${headStartBonus} Pieces`);
+                    }
+                    gameState.currency += headStartBonus;
+                    
                     const centerX = BOARD_X + (gameState.cols * gameState.pieceWidth) / 2 - 40;
                     const centerY = BOARD_Y + (gameState.rows * gameState.pieceHeight) / 2;
                     spawnTextParticle(centerX, centerY, `+${reward} Pieces`);

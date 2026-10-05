@@ -1,5 +1,3 @@
-// Pointer input: drag and drop piece placement (mouse + touch).
-
 function getPointerPos(e) {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -33,8 +31,6 @@ function onPointerDown(e) {
             puzzle.pieces.splice(i, 1);
             puzzle.pieces.push(draggedPiece);
 
-            // If the player intercepted a piece an auto-placer was flying,
-            // immediately dispatch a replacement so automation doesn't stall.
             if (wasAnimating) {
                 gameState.autoTimer = getLaunchCooldownTrack();
                 puzzle.launchAutoPieces();
@@ -59,7 +55,6 @@ function onPointerUp() {
 
         const distance = Math.hypot(draggedPiece.x - targetX, draggedPiece.y - targetY);
 
-        // Snap when dropped within the snap radius of the target slot.
         if (distance < getSnapRadius()) {
             draggedPiece.x = targetX;
             draggedPiece.y = targetY;
@@ -79,9 +74,11 @@ function onPointerUp() {
                 gameState.currency += reward;
                 recordPuzzleComplete(reward);
                 playComplete();
-                // Head Start pays out per completed puzzle, not on every
-                // initNewPuzzle (which also fires on resizes/upgrades).
-                gameState.currency += getHeadStartBonus();
+                var headStartBonus = getHeadStartBonus();
+                if (headStartBonus > 0) {
+                    spawnTextParticle(BOARD_X + BOARD_WIDTH / 2 - 40, BOARD_Y + BOARD_HEIGHT / 2 + 30, `+${headStartBonus} Pieces`);
+                }
+                gameState.currency += headStartBonus;
 
                 const centerX = BOARD_X + BOARD_WIDTH / 2 - 40;
                 const centerY = BOARD_Y + BOARD_HEIGHT / 2;
@@ -89,8 +86,7 @@ function onPointerUp() {
 
                 updateUI();
 
-                // Brief delay so the finished grid is visible.
-                setTimeout(initNewPuzzle, 600);
+                setTimeout(initNewPuzzle, 50);
             }
         }
     }

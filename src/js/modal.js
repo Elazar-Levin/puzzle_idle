@@ -1,7 +1,5 @@
-// Themed modal dialogs (replaces native alert/confirm).
-
 function showModal(message, buttons) {
-    // Only one modal at a time — repeated Enter presses must not stack them.
+    // Only one modal at a time
     if (document.getElementById("modal-backdrop")) {return;}
 
     const backdrop = document.createElement("div");

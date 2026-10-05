@@ -1,23 +1,16 @@
-// Economy and progression math.
-
 function getUpgradeCost(currentValue) {
-    // Exponential curve, tuned so the early game stays cheap and paced:
-    // 2 -> 3 costs 2, 3 -> 4 costs 3, then 4, 6, 10, ... growing fast.
     const base = Math.floor(2 * Math.pow(1.5, Math.max(0, currentValue - 2)));
     const discount = Math.max(0, 1 - 0.10 * prestigeLevel("discount"));
     return Math.max(1, Math.floor(base * discount));
 }
 
 function getCompletionReward(rows, cols) {
-    // Roughly half the piece count: a 2x2 pays 2, a 3x3 pays 4, etc.
-    // One completion should comfortably afford roughly one dimension upgrade.
     const totalPieces = rows * cols;
     const baseReward = Math.floor(totalPieces / 2);
     return Math.floor(baseReward * gameState.payoutMultiplier * (1 + 0.10 * (buffs.reward || 0)));
 }
 
 function calculatePrestigeGain() {
-    // Based on the maximum board size owned, not the currently selected one.
     const totalCurrentCells = gameState.maxRows * gameState.maxCols;
     if (totalCurrentCells <= 100) {return 0;}
 
@@ -60,8 +53,6 @@ function getPrestigeUpgradeCost(key, level = prestigeLevel(key)) {
     if (key === "guide") {
         return level >= 1 ? Infinity : base;
     }
-    // Flat per-level cost: upgrades stay meaningful across many prestiges
-    // instead of doubling away from the prestige rewards.
     return base * (level + 1);
 }
 
@@ -74,7 +65,5 @@ function getHeadStartBonus() {
 }
 
 function recomputePayoutMultiplier() {
-    // Spending Shards on upgrades is a trade: fewer banked Shards,
-    // so the payout multiplier drops, but the upgrade perks remain.
     gameState.payoutMultiplier = 1.0 + gameState.prestigeCurrency * (0.01 + 0.01 * prestigeLevel("mastery"));
 }

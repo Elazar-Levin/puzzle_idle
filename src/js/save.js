@@ -5,15 +5,12 @@ const SAVE_KEY = "puzzleIdleSaveV1";
 let suppressAutosave = false;
 let lastSaved = 0;
 
-// Awards auto-placer progress earned while the page was closed.
 function simulateIdle(seconds) {
     if (gameState.autoPlacers <= 0 || seconds <= 0) {return 0;}
 
     const elapsed = Math.min(seconds, 8 * 3600);
     const cooldown = getLaunchCooldownTrack();
 
-    // Each cooldown cycle lands up to autoPlacers pieces; subtract a
-    // couple of cycles for the initial launch/landing flight time.
     const cycles = Math.max(0, Math.floor(elapsed / cooldown) - 2);
     const placed = cycles * gameState.autoPlacers;
 

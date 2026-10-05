@@ -1,5 +1,3 @@
-// Board layout, resizing, and puzzle (re)generation.
-
 function recalculateBoardScale() {
     const basePieceSize = 60;
 
@@ -20,7 +18,6 @@ function recalculateBoardScale() {
         scaleY = maxAllowedHeight / rawHeight;
     }
 
-    // Uniform scale so the board never distorts.
     const finalScale = Math.min(scaleX, scaleY);
 
     gameState.pieceWidth = basePieceSize * finalScale;
@@ -30,7 +27,6 @@ function recalculateBoardScale() {
     BOARD_WIDTH = gameState.cols * gameState.pieceWidth;
     BOARD_HEIGHT = gameState.rows * gameState.pieceHeight;
 
-    // Center the board on screen.
     BOARD_X = (window.innerWidth - BOARD_WIDTH) / 2;
     BOARD_Y = (window.innerHeight - BOARD_HEIGHT) / 2;
 }

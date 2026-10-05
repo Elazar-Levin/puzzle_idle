@@ -3,11 +3,10 @@
 // Pipeline: whenever a puzzle starts, the texture downloaded during the
 // PREVIOUS puzzle is swapped in, and the following one is immediately
 // requested in the background. If a download isn't finished yet, the
-// old texture stays on screen until the new one is ready — the board
-// never blanks out.
+// old texture stays on screen until the new one is ready
 
-let nextImage = null;   // texture reserved for the next puzzle
-let nextReady = false;  // true once that texture has finished downloading
+let nextImage = null; 
+let nextReady = false; 
 let nextW = 0;
 let nextH = 0;
 
@@ -25,8 +24,6 @@ function requestImage(onReady) {
     const img = new Image();
     img.crossOrigin = "anonymous";
 
-    // Handlers must be attached BEFORE src is set, or a fast/cached
-    // response can fire before we start listening.
     img.onload = () => {
         tagPieceColors(img);
         onReady(img, true);
@@ -40,8 +37,6 @@ function requestImage(onReady) {
     return img;
 }
 
-// Average each piece's color from the finished image, then bucket it,
-// so the auto-placer can fill "color sections" like a real puzzle.
 function tagPieceColors(img) {
     try {
         const c = document.createElement("canvas");
@@ -53,7 +48,6 @@ function tagPieceColors(img) {
         const pw = img.naturalWidth / gameState.cols;
         const ph = img.naturalHeight / gameState.rows;
 
-        // Average color per piece.
         const avgs = [];
         for (const piece of puzzle ? puzzle.pieces : []) {
             const data = cx.getImageData(
@@ -96,8 +90,7 @@ function tagPieceColors(img) {
             avgs.push(...smoothed);
         }
 
-        // K-means into a handful of color sections (was: naive per-channel
-        // rounding, which split every piece into its own "color").
+        // K-means into a handful of color sections
         const K = 6;
         const seeds = [];
         for (let i = 0; i < K && i < avgs.length; i++) {
@@ -125,8 +118,6 @@ function tagPieceColors(img) {
             a.piece.colorBucket = String(a.bucket);
         }
 
-        // Group same-colored pieces into contiguous sections (flood fill
-        // over grid neighbors) — this is what a human does by hand.
         let sectionId = 0;
         const seen = new Set();
         if (currentPuzzle) {
@@ -177,12 +168,9 @@ function loadNewPuzzleImage() {
     const dimsMatch = nextImage && nextW === w && nextH === h;
 
     if (dimsMatch && nextReady) {
-        // Ready to go: instant swap.
         gameState.puzzleImage = nextImage;
         gameState.imageLoaded = true;
     } else if (dimsMatch) {
-        // Still downloading — reuse that same request as the swap.
-        // Keep the old texture on screen until it lands.
         const img = nextImage;
         img.onload = null;
         img.onerror = null;
@@ -193,14 +181,11 @@ function loadNewPuzzleImage() {
         img.addEventListener("error", () => {
             console.error("Puzzle texture download failed.");
         });
-        // If it somehow already completed between checks, swap now.
         if (img.complete && img.naturalWidth > 0) {
             gameState.puzzleImage = img;
             gameState.imageLoaded = true;
         }
     } else {
-        // Grid size changed (upgrade/prestige): fetch a fresh one and
-        // swap it in when ready, keeping the old texture visible meanwhile.
         const img = requestImage((loaded, ok) => {
             if (ok) {
                 gameState.puzzleImage = loaded;

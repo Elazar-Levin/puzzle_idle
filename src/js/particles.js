@@ -1,5 +1,3 @@
-// Floating text particles (e.g. "+25 Pieces").
-
 const PARTICLE_LIFE = 1.2;
 const PARTICLE_RISE_SPEED = 45; // pixels per second
 

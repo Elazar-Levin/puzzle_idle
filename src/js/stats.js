@@ -1,5 +1,3 @@
-// Stats, daily bonus, and achievements.
-
 function todayStr() {
     return new Date().toISOString().slice(0, 10);
 }
@@ -16,7 +14,6 @@ function recordPuzzleComplete(reward) {
         }
     }
 
-    // Daily bonus: first puzzle completed each day pays shards.
     if (lastDailyDate !== todayStr()) {
         lastDailyDate = todayStr();
         gameState.prestigeCurrency += 5;
@@ -136,8 +133,6 @@ function renderChallenges() {
         }
     }
 
-    // Guard: only rebuild the button list when something actually changed —
-    // rebuilding mid-hover destroys the element under the cursor.
     const signature = CHALLENGES.map(c => challenges[c.id] ? 1 : 0).join("") + (activeChallenge ? "1" : "0");
     if (signature === lastChallengesSignature) {return;}
     lastChallengesSignature = signature;
@@ -153,7 +148,6 @@ function renderChallenges() {
 
 function checkAchievements() {
     // Achievements only start paying out after the first prestige,
-    // otherwise the early shard flow inflates the multiplier too fast.
     if (stats.prestiges < 1) {return;}
 
     for (const a of ACHIEVEMENTS) {
@@ -217,7 +211,7 @@ function buySkin(id) {
     if (!theme) {return;}
 
     if (skins[id]) {
-        activeSkin = id; // already owned: just activate
+        activeSkin = id; 
     } else if (gameState.prestigeCurrency >= theme.cost) {
         gameState.prestigeCurrency -= theme.cost;
         skins[id] = true;
@@ -237,8 +231,7 @@ function renderSkins() {
     const el = document.getElementById("skins-list");
     if (!el) {return;}
 
-    // Only rebuild when something actually changed — rebuilding the
-    // buttons mid-hover destroys the element under the cursor.
+    // Only rebuild when something actually changed 
     const signature = Object.keys(THEMES).map(id => `${id}:${skins[id] ? 1 : 0}:${activeSkin === id ? 1 : 0}`).join("|");
     if (signature === lastSkinsSignature) {return;}
     lastSkinsSignature = signature;
