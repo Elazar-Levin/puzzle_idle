@@ -29,7 +29,7 @@ function calculatePrestigeGain() {
     if (totalCurrentCells <= FLAT_CAP) {
         gain = flatGain;
     } else {
-        gain = ((FLAT_CAP - 100) / 5) * Math.pow(1.05, totalCurrentCells - FLAT_CAP);
+        gain = ((FLAT_CAP - 100) / 5) * Math.pow(1.001, totalCurrentCells - FLAT_CAP);
     }
 
     return Math.floor(gain * (1 + 0.10 * prestigeLevel("tokens")) * (1 + 0.10 * (buffs.shards || 0)));
