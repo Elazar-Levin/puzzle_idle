@@ -31,7 +31,8 @@ function simulateIdle(seconds) {
 function applyOfflineProgress() {
     if (!lastSaved) {return;}
     const result = simulateIdle((Date.now() - lastSaved) / 1000);
-    if (result) {
+    if (result && result.completions > 0) {
+        initNewPuzzle();
         showAlert(`Welcome back! Your auto-placers finished ${result.completions} puzzle${result.completions === 1 ? "" : "s"}: +${result.reward} Pieces`);
     }
 }
@@ -48,6 +49,8 @@ document.addEventListener("visibilitychange", () => {
         hiddenAt = 0;
         const result = simulateIdle(elapsed);
         if (result && result.completions > 0) {
+            // Reset the board to reflect the simulated progress.
+            initNewPuzzle();
             showAlert(`Welcome back! Your auto-placers finished ${result.completions} puzzle${result.completions === 1 ? "" : "s"}: +${result.reward} Pieces`);
         }
     }
