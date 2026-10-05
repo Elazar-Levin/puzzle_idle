@@ -64,7 +64,7 @@ function updateUI() {
     document.getElementById("tokens-info").innerText =
         `+${prestigeLevel("tokens") * 10}% → +${(prestigeLevel("tokens") + 1) * 10}% Shards`;
     document.getElementById("mastery-info").innerText =
-        `${5 + prestigeLevel("mastery")}% → ${6 + prestigeLevel("mastery")}% boost per shard`;
+        `${1 + prestigeLevel("mastery")}% → ${2 + prestigeLevel("mastery")}% boost per shard`;
 
     document.getElementById("daily-display").innerText = (lastDailyDate === todayStr()) ? "Claimed" : "Available";
 
