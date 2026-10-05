@@ -152,6 +152,10 @@ function renderChallenges() {
 }
 
 function checkAchievements() {
+    // Achievements only start paying out after the first prestige,
+    // otherwise the early shard flow inflates the multiplier too fast.
+    if (stats.prestiges < 1) {return;}
+
     for (const a of ACHIEVEMENTS) {
         if (!achievements[a.id] && a.test()) {
             achievements[a.id] = true;
