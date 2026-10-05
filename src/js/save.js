@@ -6,26 +6,52 @@ let suppressAutosave = false;
 let lastSaved = 0;
 
 // Awards auto-placer progress earned while the page was closed.
-function applyOfflineProgress() {
-    if (!lastSaved || gameState.autoPlacers <= 0) {return;}
+function simulateIdle(seconds) {
+    if (gameState.autoPlacers <= 0 || seconds <= 0) {return 0;}
 
-    const elapsed = Math.min((Date.now() - lastSaved) / 1000, 8 * 3600);
+    const elapsed = Math.min(seconds, 8 * 3600);
     const cooldown = getLaunchCooldownTrack();
 
-    // Each cooldown cycle lands up to autoPlacers Pieces; subtract a
+    // Each cooldown cycle lands up to autoPlacers pieces; subtract a
     // couple of cycles for the initial launch/landing flight time.
     const cycles = Math.max(0, Math.floor(elapsed / cooldown) - 2);
     const placed = cycles * gameState.autoPlacers;
 
     const perPuzzle = gameState.rows * gameState.cols;
     const completions = Math.floor(placed / perPuzzle);
-    if (completions <= 0) {return;}
+    if (completions <= 0) {return 0;}
 
     const reward = getCompletionReward(gameState.rows, gameState.cols) * completions;
     gameState.currency += reward;
-
-    showAlert(`Welcome back! Your auto-placers finished ${completions} puzzle${completions === 1 ? "" : "s"}: +${reward} Pieces`);
+    stats.puzzlesCompleted += completions;
+    stats.lifetimePieces += reward;
+    return { completions, reward };
 }
+
+function applyOfflineProgress() {
+    if (!lastSaved) {return;}
+    const result = simulateIdle((Date.now() - lastSaved) / 1000);
+    if (result) {
+        showAlert(`Welcome back! Your auto-placers finished ${result.completions} puzzle${result.completions === 1 ? "" : "s"}: +${result.reward} Pieces`);
+    }
+}
+
+// Called when the tab is hidden then shown again.
+let hiddenAt = 0;
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        hiddenAt = Date.now();
+        return;
+    }
+    if (hiddenAt > 0) {
+        const elapsed = (Date.now() - hiddenAt) / 1000;
+        hiddenAt = 0;
+        const result = simulateIdle(elapsed);
+        if (result && result.completions > 0) {
+            showAlert(`Welcome back! Your auto-placers finished ${result.completions} puzzle${result.completions === 1 ? "" : "s"}: +${result.reward} Pieces`);
+        }
+    }
+});
 
 function saveGame() {
     if (suppressAutosave) {return;}

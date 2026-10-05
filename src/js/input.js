@@ -79,6 +79,9 @@ function onPointerUp() {
                 gameState.currency += reward;
                 recordPuzzleComplete(reward);
                 playComplete();
+                // Head Start pays out per completed puzzle, not on every
+                // initNewPuzzle (which also fires on resizes/upgrades).
+                gameState.currency += getHeadStartBonus();
 
                 const centerX = BOARD_X + BOARD_WIDTH / 2 - 40;
                 const centerY = BOARD_Y + BOARD_HEIGHT / 2;

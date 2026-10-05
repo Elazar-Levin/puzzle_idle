@@ -66,6 +66,4 @@ function initNewPuzzle() {
     puzzle.scramble(canvas.width, canvas.height);
     puzzleStartTime = Date.now();
     gameState.activeSection = null;
-
-    gameState.currency += getHeadStartBonus();
 }

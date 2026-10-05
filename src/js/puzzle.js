@@ -152,6 +152,13 @@ class JigsawPuzzle {
             }
         }
 
+        // If the strategy whittles the pool down below the flight slots,
+        // top it up with the remaining pieces so every placer fires.
+        if (pool.length < openFlightSlots) {
+            const extras = availablePieces.filter(p => !pool.includes(p));
+            pool = pool.concat(extras);
+        }
+
         const PiecesToLaunch = Math.min(openFlightSlots, pool.length);
 
         for (let i = 0; i < PiecesToLaunch; i++) {
@@ -205,6 +212,7 @@ class JigsawPuzzle {
                     gameState.currency += reward;
                     recordPuzzleComplete(reward);
                     playComplete();
+                    gameState.currency += getHeadStartBonus();
 
                     const centerX = BOARD_X + (gameState.cols * gameState.pieceWidth) / 2 - 40;
                     const centerY = BOARD_Y + (gameState.rows * gameState.pieceHeight) / 2;
